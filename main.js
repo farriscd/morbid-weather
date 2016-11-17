@@ -55,9 +55,6 @@ const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog;
 const fs = require('fs');
 
-
-
-
 // Custom menu code
 const Menu = electron.Menu;
 let template = [{

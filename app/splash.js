@@ -1,23 +1,17 @@
-const ipc = require('electron').ipcRenderer
-const selectDirBtn = document.getElementById('select-directory')
-const {dialog} = require('electron').remote
-
-// The function gets called when the window is fully loaded
 window.onload = function () {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
+    context.canvas.width = window.innerWidth;
+    context.canvas.height = window.innerHeight;
 
     // Load background music
     bgMusic = new Audio('mp3/Salty\ Ditty.mp3');
     bgMusic.volume = 0.25;
 
     // Define the image dimensions
-    //var width = canvas.width;
-    //var height = canvas.height;
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-
+    var width = canvas.width;
+    var height = canvas.height;
 
     // Create an ImageData object
     var imagedata = context.createImageData(width, height);
@@ -63,32 +57,8 @@ window.onload = function () {
     // Call the main loop
     main(0);
     bgMusic.play();
-    window.addEventListener('keydown', function (event) {
-        if (event.keyCode == 37) {
-            //bgMusic.volume += 0.05;
-            //alert('Left was pressed');
-        }
-        else if (event.keyCode == 39) {
-            //alert('Right was pressed');
-            //bgMusic.volume -= 0.05;
 
-        }
-    });
     window.onblur = function () { bgMusic.pause(); cancelAnimationFrame(bgAnim); };
     window.onfocus = function () { main(0); if (bgMusic.paused) { bgMusic.play(); } }
 
-    document.getElementById('fileId').addEventListener('change', function (e) {
-        //use the file here
-        var files = e.target.files;
-        var f = files[0]; {
-            var reader = new FileReader();
-            var name = f.name;
-            reader.onload = function (e) {
-                console.log(e.target.result);
-            };
-            reader.readAsBinaryString(f);
-        }
-    });
-
-    
 };
