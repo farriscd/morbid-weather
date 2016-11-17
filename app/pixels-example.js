@@ -1,9 +1,13 @@
+const ipc = require('electron').ipcRenderer
+const selectDirBtn = document.getElementById('select-directory')
+const {dialog} = require('electron').remote
+
 // The function gets called when the window is fully loaded
-window.onload = function() {
+window.onload = function () {
     // Get the canvas and context
-    var canvas = document.getElementById("viewport"); 
+    var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
- 
+
     // Load background music
     bgMusic = new Audio('mp3/Salty\ Ditty.mp3');
     bgMusic.volume = 0.25;
@@ -17,7 +21,7 @@ window.onload = function() {
 
     // Create an ImageData object
     var imagedata = context.createImageData(width, height);
- 
+
     // Create the image
     function createImage(offset) {
         // Loop over all of the pixels
@@ -25,15 +29,15 @@ window.onload = function() {
             for (var y = 0; y < height; y++) {
                 // Get the pixel index
                 var pixelindex = (y * width + x) * 4;
- 
+
                 // Generate a xor pattern with some random noise
                 var red = ((x + offset) % 256) ^ ((y + offset) % 256);
                 var green = ((2 * x + offset) % 256) ^ ((2 * y + offset) % 256);
                 var blue = 50 + Math.floor(Math.random() * 100);
- 
+
                 // Rotate the colors
                 blue = (blue + offset) % 256;
- 
+
                 // Set the pixel data
                 imagedata.data[pixelindex] = red;     // Red
                 imagedata.data[pixelindex + 1] = green; // Green
@@ -42,20 +46,20 @@ window.onload = function() {
             }
         }
     }
- 
+
     var bgAnim;
     // Main loop
-    function main(tframe) {     
+    function main(tframe) {
         // Request animation frames
         bgAnim = window.requestAnimationFrame(main);
- 
+
         // Create the image
         createImage(Math.floor(tframe / 15));
- 
+
         // Draw the image data to the canvas
         context.putImageData(imagedata, 0, 0);
     }
- 
+
     // Call the main loop
     main(0);
     bgMusic.play();
@@ -70,7 +74,21 @@ window.onload = function() {
 
         }
     });
-    window.onblur = function() {bgMusic.pause(); cancelAnimationFrame(bgAnim);};
-    window.onfocus = function() {main(0);  if (bgMusic.paused) { bgMusic.play(); } }
+    window.onblur = function () { bgMusic.pause(); cancelAnimationFrame(bgAnim); };
+    window.onfocus = function () { main(0); if (bgMusic.paused) { bgMusic.play(); } }
+
+    document.getElementById('fileId').addEventListener('change', function (e) {
+        //use the file here
+        var files = e.target.files;
+        var f = files[0]; {
+            var reader = new FileReader();
+            var name = f.name;
+            reader.onload = function (e) {
+                console.log(e.target.result);
+            };
+            reader.readAsBinaryString(f);
+        }
+    });
+
     
 };
