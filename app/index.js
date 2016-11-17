@@ -12,17 +12,19 @@ window.onload = function () {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    //canvas.width = window.innerWidth;
+    //canvas.height = window.innerHeight;
 
+    //window.resizeTo(canvas.width, canvas.height);
+    
     document.getElementById("viewport").style.backgroundColor = 'rgb(0, 0, 0)';
 
     var ix = 0;
     var iy = 0;
 
     // Define the image dimensions
-    var pixelWidth = canvas.width / 32;
-    var pixelHeight = canvas.height / 64;
+    var pixelWidth = canvas.width / 64;
+    var pixelHeight = canvas.height / 32;
 
     // Create an ImageData object
     var imagedata = context.createImageData(canvas.width, canvas.height);
@@ -62,8 +64,6 @@ window.onload = function () {
 
     // Main loop
     function main(tframe) {
-
-
         // Request animation frames
         window.requestAnimationFrame(main);
 
@@ -82,19 +82,19 @@ window.onload = function () {
 
         if (e.keyCode == '38' && iy > 0) {
             // up arrow
-            iy -= 1;
+            iy -= 10;
         }
-        else if (e.keyCode == '40' && iy < canvas.height - pixelHeight - 1) {
+        else if (e.keyCode == '40' && iy < canvas.height - pixelHeight - 9) {
             // down arrow
-            iy += 1;
+            iy += 10;
         }
         else if (e.keyCode == '37' && ix > 0) {
             // left arrow
-            ix -= 1;
+            ix -= 10;
         }
-        else if (e.keyCode == '39' && ix < canvas.width - pixelWidth - 1) {
+        else if (e.keyCode == '39' && ix < canvas.width - pixelWidth - 9) {
             // right arrow
-            ix += 1;
+            ix += 10;
         }
 
     }

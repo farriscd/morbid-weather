@@ -8,7 +8,7 @@ let win
 
 function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({ width: 640, height: 320 })
+  win = new BrowserWindow({ width: 800, height: 600 })
 
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/app/index.html`)
@@ -51,7 +51,6 @@ app.on('activate', () => {
 // code. You can also put them in separate files and require them here.
 
 // Filesystem consts?
-const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog;
 const fs = require('fs');
 
