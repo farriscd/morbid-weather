@@ -15,6 +15,8 @@ window.onload = function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    document.getElementById("viewport").style.backgroundColor = 'rgb(0, 0, 0)';
+
     var ix = 0;
     var iy = 0;
 
@@ -28,6 +30,22 @@ window.onload = function () {
     // Create the image
     function createImage(offset) {
         // Loop over all of the pixels
+        // Redraws black background
+        for (var x = 0; x < canvas.width; x++) {
+            for (var y = 0; y < canvas.height; y++) {
+                // Get the pixel index
+                var pixelindex = (y * canvas.width + x) * 4;
+
+                // Set the pixel data
+                imagedata.data[pixelindex] = 0;     // Red
+                imagedata.data[pixelindex + 1] = 0; // Green
+                imagedata.data[pixelindex + 2] = 0;  // Blue
+                imagedata.data[pixelindex + 3] = 0;   // Alpha
+            }
+        }
+
+        // Loops over pixel size of pixelWidth x pixelHeight
+        // Draws white pixel
         for (var x = ix; x < ix + pixelWidth; x++) {
             for (var y = iy; y < iy + pixelHeight; y++) {
                 // Get the pixel index
@@ -35,8 +53,8 @@ window.onload = function () {
 
                 // Set the pixel data
                 imagedata.data[pixelindex] = 255;     // Red
-                imagedata.data[pixelindex + 1] = 0; // Green
-                imagedata.data[pixelindex + 2] = 0;  // Blue
+                imagedata.data[pixelindex + 1] = 255; // Green
+                imagedata.data[pixelindex + 2] = 255;  // Blue
                 imagedata.data[pixelindex + 3] = 255;   // Alpha
             }
         }
@@ -44,6 +62,8 @@ window.onload = function () {
 
     // Main loop
     function main(tframe) {
+
+
         // Request animation frames
         window.requestAnimationFrame(main);
 
@@ -64,7 +84,7 @@ window.onload = function () {
             // up arrow
             iy -= 1;
         }
-        else if (e.keyCode == '40' && iy < canvas.height-pixelHeight-1) {
+        else if (e.keyCode == '40' && iy < canvas.height - pixelHeight - 1) {
             // down arrow
             iy += 1;
         }
@@ -72,7 +92,7 @@ window.onload = function () {
             // left arrow
             ix -= 1;
         }
-        else if (e.keyCode == '39' && ix < canvas.width-pixelWidth-1) {
+        else if (e.keyCode == '39' && ix < canvas.width - pixelWidth - 1) {
             // right arrow
             ix += 1;
         }
