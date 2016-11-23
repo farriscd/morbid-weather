@@ -12,8 +12,8 @@ window.onload = function () {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
-    //canvas.width = window.innerWidth;
-    //canvas.height = window.innerHeight;
+
+    onResizeEvent();
 
     //window.resizeTo(canvas.width, canvas.height);
     
@@ -100,3 +100,11 @@ window.onload = function () {
     }
 };
 
+function onResizeEvent() {
+    var canvas = document.getElementById("viewport");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', onResizeEvent, false);
