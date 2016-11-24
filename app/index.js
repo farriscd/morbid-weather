@@ -11,7 +11,31 @@ window.onload = function () {
 var stats = new Stats();
 
 
+var rendererOptions = {
+    rendering: true,
+    framerateLimit: 60,
+}
+
+stats.showStats = function() {
+    this.showPanel(0);
+}
+
+stats.hideStats = function() {
+    this.showPanel(-1);
+}
+
 window.onload = function () {
+
+    var gui = new dat.GUI();
+
+    var statsFolder = gui.addFolder('stats');
+    statsFolder.add(stats, 'showStats');
+    statsFolder.add(stats, 'hideStats');
+
+    var rendererFolder = gui.addFolder('renderer');
+    rendererFolder.add(rendererOptions, 'rendering');
+    rendererFolder.add(rendererOptions, 'framerateLimit', 10, 60);
+
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
@@ -34,6 +58,12 @@ window.onload = function () {
 
     // Create the image
     function createImage(offset) {
+
+        // Do nothing if rendering is not enabled.
+        if (! rendererOptions.rendering) {
+            return;
+        }
+
         // Loop over all of the pixels
         // Redraws black background
         for (var x = 0; x < canvas.width; x++) {
@@ -67,8 +97,10 @@ window.onload = function () {
 
     // Main loop
     function main(tframe) {
-        // Request animation frames
-        window.requestAnimationFrame(main);
+        // Rate limit rendering based on framerate limit.
+        setTimeout(function() {
+            window.requestAnimationFrame(main);
+        }, 1000 / rendererOptions.framerateLimit);
 
         stats.begin();
 
