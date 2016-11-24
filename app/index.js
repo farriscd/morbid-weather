@@ -8,8 +8,8 @@ window.onload = function () {
     window.onfocus = function () { splash.main(0); if (splash.bgMusic.paused) { splash.bgMusic.play(); } }
 }*/
 
+var gui;
 var stats = new Stats();
-
 
 var rendererOptions = {
     rendering: true,
@@ -26,7 +26,9 @@ stats.hideStats = function() {
 
 window.onload = function () {
 
-    var gui = new dat.GUI();
+    // Create new DAT GUI and close it by default.
+    gui = new dat.GUI();
+    gui.close();
 
     var statsFolder = gui.addFolder('stats');
     statsFolder.add(stats, 'showStats');
@@ -138,6 +140,8 @@ window.onload = function () {
 
     }
 
+    // Add the stats UI and hide it by default.
     document.body.appendChild(stats.dom);
+    stats.hideStats();
 };
 
