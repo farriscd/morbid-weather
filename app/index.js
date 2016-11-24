@@ -8,6 +8,9 @@ window.onload = function () {
     window.onfocus = function () { splash.main(0); if (splash.bgMusic.paused) { splash.bgMusic.play(); } }
 }*/
 
+var stats = new Stats();
+
+
 window.onload = function () {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
@@ -67,11 +70,15 @@ window.onload = function () {
         // Request animation frames
         window.requestAnimationFrame(main);
 
+        stats.begin();
+
         // Create the image
         createImage(Math.floor(tframe / 15));
 
         // Draw the image data to the canvas
         context.putImageData(imagedata, 0, 0);
+
+        stats.end();
     }
     main(0);
 
@@ -98,5 +105,7 @@ window.onload = function () {
         }
 
     }
+
+    document.body.appendChild(stats.dom);
 };
 
