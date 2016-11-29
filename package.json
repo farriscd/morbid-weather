@@ -1,6 +1,7 @@
 {
   "name": "chip8_emulator",
-  "version": "0.0.2",
+  "version": "0.0.5",
+  "license": "MIT",
   "main": "./main.js",
   "scripts": {
     "start": "./node_modules/.bin/electron ."

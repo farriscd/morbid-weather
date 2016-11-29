@@ -1,31 +1,40 @@
-/*var splash = require('./splash');
+const remote = require('electron').remote;
+const stats = new Stats();
+//const ipc = require('electron').ipcRenderer;
 
-window.onload = function () {
-    splash.main(0);
-    splash.bgMusic.play();
-
-    window.onblur = function () { splash.bgMusic.pause(); cancelAnimationFrame(splash.bgAnim); };
-    window.onfocus = function () { splash.main(0); if (splash.bgMusic.paused) { splash.bgMusic.play(); } }
-}*/
-
-var gui;
-var stats = new Stats();
+let gui;
 
 var rendererOptions = {
     rendering: true,
     framerateLimit: 60,
 }
 
-stats.showStats = function() {
+stats.showStats = function () {
     this.showPanel(0);
 }
 
-stats.hideStats = function() {
+stats.hideStats = function () {
     this.showPanel(-1);
 }
 
-window.onload = function () {
 
+function draw(xIndex, yIndex, pixelWidth, pixelHeight, canvasWidth, imageData, color) {
+    for (var x = xIndex; x < xIndex + pixelWidth; x++) {
+        for (var y = yIndex; y < yIndex + pixelHeight; y++) {
+            // Get the pixel index
+            var pixelindex = (y * canvasWidth + x) * 4;
+
+            // Set the pixel data
+            imageData.data[pixelindex] = color;     // Red
+            imageData.data[pixelindex + 1] = color; // Green
+            imageData.data[pixelindex + 2] = color;  // Blue
+            imageData.data[pixelindex + 3] = color;   // Alpha
+        }
+    }
+}
+
+
+window.onload = function () {
     // Create new DAT GUI and close it by default.
     gui = new dat.GUI();
     gui.close();
@@ -38,69 +47,45 @@ window.onload = function () {
     rendererFolder.add(rendererOptions, 'rendering');
     rendererFolder.add(rendererOptions, 'framerateLimit', 10, 60);
 
+
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
 
     onResizeEvent();
-
-    //window.resizeTo(canvas.width, canvas.height);
-    
     document.getElementById("viewport").style.backgroundColor = 'rgb(0, 0, 0)';
 
+
+    // Define the pixel dimensions
     var ix = 0;
     var iy = 0;
-
-    // Define the image dimensions
     var pixelWidth = canvas.width / 64;
     var pixelHeight = canvas.height / 32;
 
     // Create an ImageData object
     var imagedata = context.createImageData(canvas.width, canvas.height);
 
+    function redrawBackground() {
+        draw(0, 0, canvas.width, canvas.height, canvas.width, imagedata, 0);
+    }
+
     // Create the image
     function createImage(offset) {
-
         // Do nothing if rendering is not enabled.
-        if (! rendererOptions.rendering) {
+        if (!rendererOptions.rendering) {
             return;
         }
 
-        // Loop over all of the pixels
-        // Redraws black background
-        for (var x = 0; x < canvas.width; x++) {
-            for (var y = 0; y < canvas.height; y++) {
-                // Get the pixel index
-                var pixelindex = (y * canvas.width + x) * 4;
-
-                // Set the pixel data
-                imagedata.data[pixelindex] = 0;     // Red
-                imagedata.data[pixelindex + 1] = 0; // Green
-                imagedata.data[pixelindex + 2] = 0;  // Blue
-                imagedata.data[pixelindex + 3] = 0;   // Alpha
-            }
-        }
-
-        // Loops over pixel size of pixelWidth x pixelHeight
-        // Draws white pixel
-        for (var x = ix; x < ix + pixelWidth; x++) {
-            for (var y = iy; y < iy + pixelHeight; y++) {
-                // Get the pixel index
-                var pixelindex = (y * canvas.width + x) * 4;
-
-                // Set the pixel data
-                imagedata.data[pixelindex] = 255;     // Red
-                imagedata.data[pixelindex + 1] = 255; // Green
-                imagedata.data[pixelindex + 2] = 255;  // Blue
-                imagedata.data[pixelindex + 3] = 255;   // Alpha
-            }
-        }
+        redrawBackground();
+        // Draw white pixel of size pixelWidth x pixelHeight at index (ix, iy)
+        draw(ix, iy, pixelWidth, pixelHeight, canvas.width, imagedata, 255);
     }
+
 
     // Main loop
     function main(tframe) {
         // Rate limit rendering based on framerate limit.
-        setTimeout(function() {
+        setTimeout(function () {
             window.requestAnimationFrame(main);
         }, 1000 / rendererOptions.framerateLimit);
 
@@ -120,7 +105,6 @@ window.onload = function () {
 
     function checkKey(e) {
         e = e || window.event;
-
         if (e.keyCode == '38' && iy > 0) {
             // up arrow
             iy -= 10;
