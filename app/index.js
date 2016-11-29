@@ -1,4 +1,4 @@
-const remote = require('electron').remote;
+var remote = require('electron').remote;
 const stats = new Stats();
 //const ipc = require('electron').ipcRenderer;
 
@@ -33,11 +33,28 @@ function draw(xIndex, yIndex, pixelWidth, pixelHeight, canvasWidth, imageData, c
     }
 }
 
+// load into 0x200 place
+function loadROM(data, memArray) {
+    for (var i = 512; i < 512 + data.length; i += 2) {
+        memArray[i] = ((data[i] << 8) + data[i + 1]);
+        console.log(memArray[i].toString(16));
+    }
+}
 
 window.onload = function () {
     // Create new DAT GUI and close it by default.
     gui = new dat.GUI();
     gui.close();
+
+    var virtualMemory = [];
+    var data = remote.getGlobal('test');
+
+/*    for (var i = 0; i < data.length; i += 2) {
+        virtualMemory[i] = ((data[i] << 8) + data[i + 1]);
+        //console.log(virtualMemory[i].toString(16));
+    }*/
+
+    loadROM(remote.getGlobal('test'), virtualMemory);
 
     var statsFolder = gui.addFolder('stats');
     statsFolder.add(stats, 'showStats');
@@ -101,20 +118,24 @@ window.onload = function () {
     }
     main(0);
 
+
     document.onkeydown = checkKey;
 
     function checkKey(e) {
         e = e || window.event;
         if (e.keyCode == '38' && iy > 0) {
             // up arrow
+            console.log(remote.getGlobal('test'));
             iy -= 10;
         }
         else if (e.keyCode == '40' && iy < canvas.height - pixelHeight - 9) {
             // down arrow
+            console.log(virtualMemory);
             iy += 10;
         }
         else if (e.keyCode == '37' && ix > 0) {
             // left arrow
+            console.log(data);
             ix -= 10;
         }
         else if (e.keyCode == '39' && ix < canvas.width - pixelWidth - 9) {

@@ -15,10 +15,10 @@ function createWindow() {
     win = new BrowserWindow({ width: 640, height: 320 });
 
     // and load the index.html of the app.
-    win.loadURL(`file://${__dirname}/app/index.html`);
+    //win.loadURL(`file://${__dirname}/app/index.html`);
 
     // Open the DevTools.
-    //win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -67,19 +67,18 @@ let template = [{
                 filters: [
                     { name: 'CH8 File', extensions: ['ch8'] }
                 ]
-            }, function(fileNames) {
+            }, function (fileNames) {
                 if (fileNames === undefined) return;
 
                 var fileName = fileNames[0];
 
                 console.log(fileName);
-                fs.readFile(fileName, function(err, data) {
+                fs.readFile(fileName, function (err, data) {
                     if (err) throw err;
-                    
+
                     global.test = data;
 
-                    console.log(data);
-                    //win.loadURL(`file://${__dirname}/app/index.html`)
+                    win.loadURL(`file://${__dirname}/app/index.html`);
                 });
             });
         }
@@ -87,7 +86,7 @@ let template = [{
         type: 'separator'
     }, {
         label: 'Exit',
-        click: function(item, focusedWindow) {
+        click: function (item, focusedWindow) {
             win.close();
         }
     }]
@@ -96,12 +95,12 @@ let template = [{
     submenu: [{
         label: 'Reload',
         accelerator: 'CmdOrCtrl+R',
-        click: function(item, focusedWindow) {
+        click: function (item, focusedWindow) {
             if (focusedWindow) {
                 // on reload, start fresh and close any old
                 // open secondary windows
                 if (focusedWindow.id === 1) {
-                    BrowserWindow.getAllWindows().forEach(function(win) {
+                    BrowserWindow.getAllWindows().forEach(function (win) {
                         if (win.id > 1) {
                             win.close();
                         }
@@ -112,28 +111,28 @@ let template = [{
         }
     }, {
         label: 'Toggle Full Screen',
-        accelerator: (function() {
+        accelerator: (function () {
             if (process.platform === 'darwin') {
                 return 'Ctrl+Command+F'
             } else {
                 return 'F11'
             }
         })(),
-        click: function(item, focusedWindow) {
+        click: function (item, focusedWindow) {
             if (focusedWindow) {
                 focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
             }
         }
     }, {
         label: 'Toggle Developer Tools',
-        accelerator: (function() {
+        accelerator: (function () {
             if (process.platform === 'darwin') {
                 return 'Alt+Command+I'
             } else {
                 return 'Ctrl+Shift+I'
             }
         })(),
-        click: function(item, focusedWindow) {
+        click: function (item, focusedWindow) {
             if (focusedWindow) {
                 focusedWindow.toggleDevTools();
             }
@@ -157,7 +156,7 @@ let template = [{
         accelerator: 'CmdOrCtrl+Shift+T',
         enabled: false,
         key: 'reopenMenuItem',
-        click: function() {
+        click: function () {
             app.emit('activate');
         }
     }]
@@ -182,7 +181,7 @@ function addUpdateMenuItems(items, position) {
         label: 'Check for Update',
         visible: false,
         key: 'checkForUpdate',
-        click: function() {
+        click: function () {
             require('electron').autoUpdater.checkForUpdates();
         }
     }, {
@@ -190,7 +189,7 @@ function addUpdateMenuItems(items, position) {
         enabled: true,
         visible: false,
         key: 'restartToUpdate',
-        click: function() {
+        click: function () {
             require('electron').autoUpdater.quitAndInstall();
         }
     }]
@@ -203,9 +202,9 @@ function findReopenMenuItem() {
     if (!menu) return;
 
     let reopenMenuItem;
-    menu.items.forEach(function(item) {
+    menu.items.forEach(function (item) {
         if (item.submenu) {
-            item.submenu.items.forEach(function(item) {
+            item.submenu.items.forEach(function (item) {
                 if (item.key === 'reopenMenuItem') {
                     reopenMenuItem = item;
                 }
@@ -246,7 +245,7 @@ if (process.platform === 'darwin') {
         }, {
             label: 'Quit',
             accelerator: 'Command+Q',
-            click: function() {
+            click: function () {
                 app.quit();
             }
         }]
@@ -268,17 +267,17 @@ if (process.platform === 'win32') {
     addUpdateMenuItems(helpMenu, 0);
 }
 
-app.on('ready', function() {
+app.on('ready', function () {
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 })
 
-app.on('browser-window-created', function() {
+app.on('browser-window-created', function () {
     let reopenMenuItem = findReopenMenuItem();
     if (reopenMenuItem) reopenMenuItem.enabled = false;
 })
 
-app.on('window-all-closed', function() {
+app.on('window-all-closed', function () {
     let reopenMenuItem = findReopenMenuItem();
     if (reopenMenuItem) reopenMenuItem.enabled = true;
 })
