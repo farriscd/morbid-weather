@@ -12,7 +12,7 @@ let win;
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({ width: 6400, height: 3200 });
+    win = new BrowserWindow({ width: 640, height: 320 });
 
     // and load the index.html of the app.
     win.loadURL(`file://${__dirname}/app/index.html`);
@@ -75,8 +75,9 @@ let template = [{
                 console.log(fileName);
                 fs.readFile(fileName, function(err, data) {
                     if (err) throw err;
+                    
                     global.test = data;
-                    console.log(data.length);
+
                     console.log(data);
                     //win.loadURL(`file://${__dirname}/app/index.html`)
                 });
