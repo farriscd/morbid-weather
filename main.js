@@ -76,7 +76,8 @@ let template = [{
                 fs.readFile(fileName, function (err, data) {
                     if (err) throw err;
 
-                    global.test = data;
+                    global.openFile = data;
+                    console.log(data);
 
                     win.loadURL(`file://${__dirname}/app/index.html`);
                 });

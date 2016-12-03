@@ -33,28 +33,26 @@ function draw(xIndex, yIndex, pixelWidth, pixelHeight, canvasWidth, imageData, c
     }
 }
 
-// load into 0x200 place
-function loadROM(data, memArray) {
-    for (var i = 512; i < 512 + data.length; i += 2) {
-        memArray[i] = ((data[i] << 8) + data[i + 1]);
-        console.log(memArray[i].toString(16));
+function drawScreen(gfx) {
+    for (var i = 0; i < gfx.length; i++) {
+        var x = (i % 64) * pixelWidth;
+        var y = Math.floor(i / 64) * pixelHeight;
+        (gfx[i] == true)
+            ? draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 255)
+            : draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 0);
     }
 }
+
 
 window.onload = function () {
     // Create new DAT GUI and close it by default.
     gui = new dat.GUI();
     gui.close();
 
-    var virtualMemory = [];
-    var data = remote.getGlobal('test');
+    var ch = new Chip8;
 
-/*    for (var i = 0; i < data.length; i += 2) {
-        virtualMemory[i] = ((data[i] << 8) + data[i + 1]);
-        //console.log(virtualMemory[i].toString(16));
-    }*/
-
-    loadROM(remote.getGlobal('test'), virtualMemory);
+    var data = remote.getGlobal('openFile');
+    ch.loadROM(data);
 
     var statsFolder = gui.addFolder('stats');
     statsFolder.add(stats, 'showStats');
@@ -68,16 +66,20 @@ window.onload = function () {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
+    canvas.width = 640;
+    canvas.height = 320;
 
-    onResizeEvent();
+    //onResizeEvent();
     document.getElementById("viewport").style.backgroundColor = 'rgb(0, 0, 0)';
 
 
     // Define the pixel dimensions
-    var ix = 0;
-    var iy = 0;
-    var pixelWidth = canvas.width / 64;
-    var pixelHeight = canvas.height / 32;
+    var ix;
+    var iy;
+    //var pixelWidth = canvas.width / 64;
+    //var pixelHeight = canvas.height / 32;
+    var pixelWidth = 10;
+    var pixelHeight = 10;
 
     // Create an ImageData object
     var imagedata = context.createImageData(canvas.width, canvas.height);
@@ -86,21 +88,33 @@ window.onload = function () {
         draw(0, 0, canvas.width, canvas.height, canvas.width, imagedata, 0);
     }
 
+    function drawScreen(gfx) {
+        for (var i = 0; i < gfx.length; i++) {
+            var x = (i % 64) * pixelWidth;
+            var y = Math.floor(i / 64) * pixelHeight;
+            (gfx[i] == true)
+                ? draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 255)
+                : draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 0);
+        }
+    }
+
+
     // Create the image
-    function createImage(offset) {
+    function createImage() {
         // Do nothing if rendering is not enabled.
         if (!rendererOptions.rendering) {
             return;
         }
 
-        redrawBackground();
+        //redrawBackground();
         // Draw white pixel of size pixelWidth x pixelHeight at index (ix, iy)
-        draw(ix, iy, pixelWidth, pixelHeight, canvas.width, imagedata, 255);
+        //draw(ix, iy, pixelWidth, pixelHeight, canvas.width, imagedata, 255);
+        drawScreen(ch.screen);
     }
 
 
     // Main loop
-    function main(tframe) {
+    function main() {
         // Rate limit rendering based on framerate limit.
         setTimeout(function () {
             window.requestAnimationFrame(main);
@@ -109,7 +123,9 @@ window.onload = function () {
         stats.begin();
 
         // Create the image
-        createImage(Math.floor(tframe / 15));
+        createImage();
+
+        ch.checkOpCode();
 
         // Draw the image data to the canvas
         context.putImageData(imagedata, 0, 0);
@@ -119,31 +135,27 @@ window.onload = function () {
     main(0);
 
 
-    document.onkeydown = checkKey;
-
-    function checkKey(e) {
-        e = e || window.event;
-        if (e.keyCode == '38' && iy > 0) {
-            // up arrow
-            console.log(remote.getGlobal('test'));
-            iy -= 10;
-        }
-        else if (e.keyCode == '40' && iy < canvas.height - pixelHeight - 9) {
-            // down arrow
-            console.log(virtualMemory);
-            iy += 10;
-        }
-        else if (e.keyCode == '37' && ix > 0) {
-            // left arrow
-            console.log(data);
-            ix -= 10;
-        }
-        else if (e.keyCode == '39' && ix < canvas.width - pixelWidth - 9) {
-            // right arrow
-            ix += 10;
-        }
-
-    }
+    //document.onkeydown = checkKey;
+    /*        function checkKey(e) {
+                e = e || window.event;
+                if (e.keyCode == '38' && iy > 0) {
+                    // up arrow
+                    iy -= 10;
+                }
+                else if (e.keyCode == '40' && iy < canvas.height - pixelHeight - 9) {
+                    // down arrow
+                    iy += 10;
+                }
+                else if (e.keyCode == '37' && ix > 0) {
+                    // left arrow
+                    ix -= 10;
+                }
+                else if (e.keyCode == '39' && ix < canvas.width - pixelWidth - 9) {
+                    // right arrow
+                    ix += 10;
+                }
+        
+            }*/
 
     // Add the stats UI and hide it by default.
     document.body.appendChild(stats.dom);
@@ -157,4 +169,4 @@ function onResizeEvent() {
     canvas.height = window.innerHeight;
 }
 
-window.addEventListener('resize', onResizeEvent, false);
+//window.addEventListener('resize', onResizeEvent, false);
