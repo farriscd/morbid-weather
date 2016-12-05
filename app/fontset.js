@@ -15,7 +15,7 @@
 // 144   0x90   1001 0000    *  *      64   0x40   0100 0000     *
 // 240   0xF0   1111 0000    ****      64   0x40   0100 0000     *
 
-var fontset = [
+var fontSet = [
   [0xF0, 0x90, 0x90, 0x90, 0xF0], // 0
   [0x20, 0x60, 0x20, 0x20, 0x70], // 1
   [0xF0, 0x10, 0xF0, 0x80, 0xF0], // 2
@@ -35,4 +35,4 @@ var fontset = [
 ];
 
 // Example access to sprite bitmap for 'F':
-//console.log(fontset[0xF]);
+//console.log(fontSet[0xF]);
