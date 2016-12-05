@@ -44,6 +44,8 @@ function drawScreen(gfx) {
 }
 
 
+var imagedata;
+
 window.onload = function () {
     // Create new DAT GUI and close it by default.
     gui = new dat.GUI();
@@ -82,13 +84,14 @@ window.onload = function () {
     var pixelHeight = 10;
 
     // Create an ImageData object
-    var imagedata = context.createImageData(canvas.width, canvas.height);
+    imagedata = context.createImageData(canvas.width, canvas.height);
 
     function redrawBackground() {
         draw(0, 0, canvas.width, canvas.height, canvas.width, imagedata, 0);
     }
 
     function drawScreen(gfx) {
+        imagedata = context.createImageData(canvas.width, canvas.height);
         for (var i = 0; i < gfx.length; i++) {
             var x = (i % 64) * pixelWidth;
             var y = Math.floor(i / 64) * pixelHeight;
@@ -169,4 +172,4 @@ function onResizeEvent() {
     canvas.height = window.innerHeight;
 }
 
-//window.addEventListener('resize', onResizeEvent, false);
+window.addEventListener('resize', onResizeEvent, false);
