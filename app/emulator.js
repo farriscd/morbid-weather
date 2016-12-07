@@ -47,6 +47,7 @@ Chip8.prototype = {
                 switch (addr) {
                     case 0x0E0:
                         console.log('screen clear');
+                        this.clearScreen();
                         break;
                     case 0x0EE:
                         console.log('returnFromSubroutine');
@@ -250,6 +251,12 @@ Chip8.prototype = {
     // 0NNN - Call - Calls RCA 1802 program at address NNN
 
     // 00E0 - Display - Clears the screen
+    clearScreen: function() {
+        for (var i = 0; i < this.screen.length; i++) {
+            this.screen[i] = 0;
+        }
+        this.programCounter += 2;
+    },
 
     // 00EE - Flow - Returns from a subroutine
     returnFromSubroutine: function () {
