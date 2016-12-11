@@ -56,6 +56,7 @@ window.onload = function () {
     var ch = new Chip8;
 
     var data = remote.getGlobal('openFile');
+    ch.loadFont();
     ch.loadROM(data);
 
     var statsFolder = gui.addFolder('stats');
@@ -123,24 +124,100 @@ window.onload = function () {
         // Rate limit rendering based on framerate limit.
         setTimeout(function () {
             window.requestAnimationFrame(main);
-        }, 1000 / rendererOptions.framerateLimit);
+        }, 1000 / 30);
+        //1000 / rendererOptions.framerateLimit
 
         stats.begin();
 
         // Create the image
-        createImage();
+        //createImage();
+        console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
 
         ch.checkOpCode();
+        createImage();
 
         // Draw the image data to the canvas
         context.putImageData(imagedata, 0, 0);
 
         stats.end();
     }
+
     main(0);
 
 
-    //document.onkeydown = checkKey;
+
+    document.onkeydown = checkKey;
+    function checkKey(e) {
+        e = e || window.event;
+        switch (e.keyCode) {
+            case 49:
+                ch.keyPress[0x1] = 1;
+                break;
+            case 50:
+                ch.keyPress[0x2] = 1;
+                break;
+            case 51:
+                ch.keyPress[0x3] = 1;
+                break;
+            case 52:
+                ch.keyPress[0xC] = 1;
+                break;
+            case 81:
+                ch.keyPress[0x4] = 1;
+                break;
+            case 87:
+                ch.keyPress[0x5] = 1;
+                break;
+            case 69:
+                ch.keyPress[0x6] = 1;
+                break;
+            case 82:
+                ch.keyPress[0xD] = 1;
+                break;
+            case 65:
+                ch.keyPress[0x7] = 1;
+                break;
+            case 83:
+                ch.keyPress[0x8] = 1;
+                break;
+            case 68:
+                ch.keyPress[0x9] = 1;
+                break;
+            case 70:
+                ch.keyPress[0xE] = 1;
+                break;
+            case 90:
+                ch.keyPress[0xA] = 1;
+                break;
+            case 88:
+                ch.keyPress[0x0] = 1;
+                break;
+            case 67:
+                ch.keyPress[0xB] = 1;
+                break;
+            case 86:
+                ch.keyPress[0xF] = 1;
+                break;
+        }
+    }
+
+    // Add the stats UI and hide it by default.
+    document.body.appendChild(stats.dom);
+    stats.hideStats();
+};
+
+function onResizeEvent() {
+    var canvas = document.getElementById("viewport");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    pixelWidth = Math.floor(canvas.width / 64);
+    pixelHeight = Math.floor(canvas.height / 32);
+}
+
+window.addEventListener('resize', onResizeEvent, false);
+
     /*        function checkKey(e) {
                 e = e || window.event;
                 if (e.keyCode == '38' && iy > 0) {
@@ -161,20 +238,3 @@ window.onload = function () {
                 }
         
             }*/
-
-    // Add the stats UI and hide it by default.
-    document.body.appendChild(stats.dom);
-    stats.hideStats();
-};
-
-function onResizeEvent() {
-    var canvas = document.getElementById("viewport");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    pixelWidth = Math.floor(canvas.width / 64);
-    pixelHeight = Math.floor(canvas.height / 32);
-}
-
-window.addEventListener('resize', onResizeEvent, false);

@@ -238,6 +238,15 @@ Chip8.prototype = {
         if (this.soundTimer > 0) {
             --this.soundTimer;
         }
+
+        console.log(this.keyPress);
+        this.keyPress = [];
+    },
+
+    loadFont: function () {
+        for (var i = 0; i < 80; i++) {
+            this.virtualMemory[i] = fontSet[i];
+        }
     },
 
     loadROM: function (data) {
@@ -251,7 +260,7 @@ Chip8.prototype = {
     // 0NNN - Call - Calls RCA 1802 program at address NNN
 
     // 00E0 - Display - Clears the screen
-    clearScreen: function() {
+    clearScreen: function () {
         for (var i = 0; i < this.screen.length; i++) {
             this.screen[i] = 0;
         }
@@ -319,6 +328,7 @@ Chip8.prototype = {
     // 7XNN - Const - Adds NN to VX
     addToVX: function (vx, nn) {
         this.register[vx] += nn;
+        this.register[vx] &= 0xFF;
         console.log(this.register[vx]);
         this.programCounter += 2;
     },
@@ -453,8 +463,10 @@ Chip8.prototype = {
 
     // EX9E - KeyOp - Skips the next instruction if the key stored in VX is pressed
     skipIfPressed: function (vx) {
+        console.log(this.register[vx]);
         if (this.keyPress[this.register[vx]] != 0) {
             console.log('skip');
+            //this.keyPress = [];
             this.programCounter += 4;
         } else {
             console.log('no skip');
@@ -464,11 +476,13 @@ Chip8.prototype = {
 
     // EXA1 - KeyOp - Skips the next instruction if the key stored in VX isn't pressed
     skipIfNotPressed: function (vx) {
-        if (this.keyPress[this.register[vx]] == 0) {
+        console.log(this.register[vx]);
+        if (this.keyPress[this.register[vx]] != 1) {
             console.log('skip');
             this.programCounter += 4;
         } else {
             console.log('no skip');
+            //this.keyPress = [];
             this.programCounter += 2;
         }
     },
@@ -499,13 +513,13 @@ Chip8.prototype = {
     // FX1E - MEM - Adds VX to I
     addToI: function (vx) {
         this.addressRegister += this.register[vx];
+        this.addressRegister &= 0xFFFF;
         this.programCounter += 2;
     },
 
     // FX29 - MEM - Sets I to the location of the sprite for the character in VX
     setFont: function (vx) {
-        this.addressRegister = fontSet[vx];
-        console.log(fontSet[vx]);
+        this.addressRegister = this.register[vx] * 5;
         this.programCounter += 2;
     },
 
@@ -534,3 +548,4 @@ Chip8.prototype = {
         this.programCounter += 2;
     }
 }
+
