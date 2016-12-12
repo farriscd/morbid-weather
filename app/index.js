@@ -124,20 +124,21 @@ window.onload = function () {
         // Rate limit rendering based on framerate limit.
         setTimeout(function () {
             window.requestAnimationFrame(main);
-        }, 1000 / 30);
-        //1000 / rendererOptions.framerateLimit
+        }, 1000 / rendererOptions.framerateLimit);
 
         stats.begin();
 
-        // Create the image
-        //createImage();
         console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
 
         ch.checkOpCode();
-        createImage();
 
-        // Draw the image data to the canvas
-        context.putImageData(imagedata, 0, 0);
+        if (ch.drawFlag === true) {
+            // Create the image
+            drawScreen(ch.screen);
+
+            // Draw the image data to the canvas
+            context.putImageData(imagedata, 0, 0);
+        }
 
         stats.end();
     }

@@ -21,6 +21,7 @@ var Chip8 = function () {
     this.soundTimer;
 
     this.opcode = 0;
+    this.drawFlag = false;
 
 }
 
@@ -341,7 +342,7 @@ Chip8.prototype = {
 
     // 8XY1 - BitOp - Sets VX to VX or VY (Bitwise OR operation)
     bitwiseOr: function (vx, vy) {
-        this.register[vx] = this.register[vx] | this.register[vy];
+        this.register[vx] |= this.register[vy];
         this.programCounter += 2;
     },
 
@@ -353,13 +354,13 @@ Chip8.prototype = {
 
     // 8XY3 - BitOp - Sets VX to VX xor VY
     bitwiseXor: function (vx, vy) {
-        this.register[vx] = this.register[vx] ^ this.register[vy];
+        this.register[vx] ^= this.register[vy];
         this.programCounter += 2;
     },
 
     // 8XY4 - Math - Adds VY to VX
     addVYtoVX: function (vx, vy) {
-        var newVX = this.register[vx] - this.register[vy];
+        var newVX = this.register[vx] + this.register[vy];
         if (newVX > 0xFF) {
             this.register[0xF] = 1;
         } else {
@@ -447,17 +448,22 @@ Chip8.prototype = {
     // DXYN - Disp - Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels
     drawSprite: function (vx, vy, height) {
         this.register[0xF] = 0;
+
         for (var y = 0; y < height; y++) {
+
             var sprite = this.virtualMemory[this.addressRegister + y];
+
             for (var x = 0; x < 8; x++) {
                 if ((sprite & (0x80 >> x)) != 0) {
                     if (this.screen[(this.register[vx] + x + ((this.register[vy] + y) * 64))] == 1) {
                         this.register[0xF] = 1;
                     }
+
                     this.screen[(this.register[vx] + x + ((this.register[vy] + y) * 64))] ^= 1;
                 }
             }
         }
+        this.drawFlag = true;
         this.programCounter += 2;
     },
 
