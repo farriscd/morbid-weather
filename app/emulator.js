@@ -192,6 +192,7 @@ Chip8.prototype = {
 
                     case 0x0A:
                         console.log('waitForKey');
+                        this.waitForKey(x);
                         break;
 
                     case 0x15:
@@ -470,7 +471,7 @@ Chip8.prototype = {
     // EX9E - KeyOp - Skips the next instruction if the key stored in VX is pressed
     skipIfPressed: function (vx) {
         console.log(this.register[vx]);
-        if (this.keyPress[this.register[vx]] != 0) {
+        if (this.keyPress[this.register[vx]] === 1) {
             console.log('skip');
             //this.keyPress = [];
             this.programCounter += 4;
@@ -483,7 +484,7 @@ Chip8.prototype = {
     // EXA1 - KeyOp - Skips the next instruction if the key stored in VX isn't pressed
     skipIfNotPressed: function (vx) {
         console.log(this.register[vx]);
-        if (this.keyPress[this.register[vx]] != 1) {
+        if (this.keyPress[this.register[vx]] === 0) {
             console.log('skip');
             this.programCounter += 4;
         } else {
@@ -501,6 +502,12 @@ Chip8.prototype = {
     },
 
     // FX0A - KeyOp - A key press is awaited, and then stored in VX
+    waitForKey: function (vx) {
+        if (this.keyPress.length > 0) {
+            this.register[vx] = this.keyPress.findIndex(function (n) { return n == 1 });
+            this.programCounter += 2;
+        }
+    },
 
     // FX15 - Timer - Sets the delay timer to VX
     setDelay: function (vx) {
