@@ -484,7 +484,7 @@ Chip8.prototype = {
     // EXA1 - KeyOp - Skips the next instruction if the key stored in VX isn't pressed
     skipIfNotPressed: function (vx) {
         console.log(this.register[vx]);
-        if (this.keyPress[this.register[vx]] === 0) {
+        if (this.keyPress[this.register[vx]] != 1) {
             console.log('skip');
             this.programCounter += 4;
         } else {

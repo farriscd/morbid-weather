@@ -142,7 +142,6 @@ window.onload = function () {
 
         stats.end();
     }
-
     main(0);
 
 
@@ -151,9 +150,6 @@ window.onload = function () {
     function checkKey(e) {
         e = e || window.event;
         switch (e.keyCode) {
-/*            case 32:
-                main();
-                break;*/
             case 49:
                 ch.keyPress[0x1] = 1;
                 break;
