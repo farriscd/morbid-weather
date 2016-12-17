@@ -1,22 +1,12 @@
 var remote = require('electron').remote;
-const stats = new Stats();
 //const ipc = require('electron').ipcRenderer;
 
 let gui;
 
-var rendererOptions = {
-    rendering: true,
-    framerateLimit: 60,
+var emulatorOptions = {
+    executing: true,
+    frequencyLimit: 60.
 }
-
-stats.showStats = function () {
-    this.showPanel(0);
-}
-
-stats.hideStats = function () {
-    this.showPanel(-1);
-}
-
 
 function draw(xIndex, yIndex, pixelWidth, pixelHeight, canvasWidth, imageData, color) {
     for (var x = xIndex; x < xIndex + pixelWidth; x++) {
@@ -59,13 +49,9 @@ window.onload = function () {
     ch.loadFont();
     ch.loadROM(data);
 
-    var statsFolder = gui.addFolder('stats');
-    statsFolder.add(stats, 'showStats');
-    statsFolder.add(stats, 'hideStats');
-
-    var rendererFolder = gui.addFolder('renderer');
-    rendererFolder.add(rendererOptions, 'rendering');
-    rendererFolder.add(rendererOptions, 'framerateLimit', 10, 60);
+    var emulatorFolder = gui.addFolder('emulator');
+    emulatorFolder.add(emulatorOptions, 'executing');
+    emulatorFolder.add(emulatorOptions, 'frequencyLimit', 1, 1024);
 
 
     // Get the canvas and context
@@ -104,14 +90,18 @@ window.onload = function () {
         }
     }
 
+    function onDraw(event) {
+        // Create the image
+        drawScreen(ch.screen);
+
+        // Draw the image data to the canvas
+        context.putImageData(imagedata, 0, 0);
+    }
+
+    ch.addEventListener('draw', onDraw);
 
     // Create the image
     function createImage() {
-        // Do nothing if rendering is not enabled.
-        if (!rendererOptions.rendering) {
-            return;
-        }
-
         //redrawBackground();
         // Draw white pixel of size pixelWidth x pixelHeight at index (ix, iy)
         //draw(ix, iy, pixelWidth, pixelHeight, canvas.width, imagedata, 255);
@@ -121,26 +111,19 @@ window.onload = function () {
 
     // Main loop
     function main() {
-        // Rate limit rendering based on framerate limit.
+        // Rate limit emulator execution speed.
         setTimeout(function () {
             window.requestAnimationFrame(main);
-        }, 1000 / rendererOptions.framerateLimit);
-
-        stats.begin();
+        }, 1000 / emulatorOptions.frequencyLimit);
 
         console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
 
-        ch.checkOpCode();
-
-        if (ch.drawFlag === true) {
-            // Create the image
-            drawScreen(ch.screen);
-
-            // Draw the image data to the canvas
-            context.putImageData(imagedata, 0, 0);
+        // Do nothing if execution is not enabled.
+        if (!emulatorOptions.executing) {
+            return;
         }
 
-        stats.end();
+        ch.checkOpCode();
     }
     main(0);
 
@@ -200,10 +183,6 @@ window.onload = function () {
                 break;
         }
     }
-
-    // Add the stats UI and hide it by default.
-    document.body.appendChild(stats.dom);
-    stats.hideStats();
 };
 
 function onResizeEvent() {
