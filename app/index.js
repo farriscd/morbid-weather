@@ -4,9 +4,9 @@ const stats = new Stats();
 
 let gui;
 
-var rendererOptions = {
-    rendering: true,
-    framerateLimit: 60,
+var emulatorOptions = {
+    executing: true,
+    frequencyLimit: 60.
 }
 
 stats.showStats = function () {
@@ -63,9 +63,9 @@ window.onload = function () {
     statsFolder.add(stats, 'showStats');
     statsFolder.add(stats, 'hideStats');
 
-    var rendererFolder = gui.addFolder('renderer');
-    rendererFolder.add(rendererOptions, 'rendering');
-    rendererFolder.add(rendererOptions, 'framerateLimit', 10, 60);
+    var emulatorFolder = gui.addFolder('emulator');
+    emulatorFolder.add(emulatorOptions, 'executing');
+    emulatorFolder.add(emulatorOptions, 'frequencyLimit', 1, 1024);
 
 
     // Get the canvas and context
@@ -104,14 +104,18 @@ window.onload = function () {
         }
     }
 
+    function onDraw(event) {
+        // Create the image
+        drawScreen(ch.screen);
+
+        // Draw the image data to the canvas
+        context.putImageData(imagedata, 0, 0);
+    }
+
+    ch.addEventListener('draw', onDraw);
 
     // Create the image
     function createImage() {
-        // Do nothing if rendering is not enabled.
-        if (!rendererOptions.rendering) {
-            return;
-        }
-
         //redrawBackground();
         // Draw white pixel of size pixelWidth x pixelHeight at index (ix, iy)
         //draw(ix, iy, pixelWidth, pixelHeight, canvas.width, imagedata, 255);
@@ -121,26 +125,22 @@ window.onload = function () {
 
     // Main loop
     function main() {
-        // Rate limit rendering based on framerate limit.
+        // Rate limit emulator execution speed.
         setTimeout(function () {
             window.requestAnimationFrame(main);
-        }, 1000 / rendererOptions.framerateLimit);
+        }, 1000 / emulatorOptions.frequencyLimit);
 
         stats.begin();
 
         console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
 
-        ch.checkOpCode();
-
-        if (ch.drawFlag === true) {
-            // Create the image
-            drawScreen(ch.screen);
-
-            // Draw the image data to the canvas
-            context.putImageData(imagedata, 0, 0);
+        // Do nothing if execution is not enabled.
+        if (!emulatorOptions.executing) {
+            return;
         }
 
         stats.end();
+        ch.checkOpCode();
     }
     main(0);
 

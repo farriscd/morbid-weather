@@ -23,6 +23,7 @@ var Chip8 = function () {
     this.opcode = 0;
     this.drawFlag = false;
 
+    this.listeners = {};
 }
 
 Chip8.prototype = {
@@ -267,6 +268,11 @@ Chip8.prototype = {
             this.screen[i] = 0;
         }
         this.programCounter += 2;
+
+        this.dispatchEvent({
+            type: 'draw',
+            target: this
+        });
     },
 
     // 00EE - Flow - Returns from a subroutine
@@ -464,8 +470,12 @@ Chip8.prototype = {
                 }
             }
         }
-        this.drawFlag = true;
         this.programCounter += 2;
+
+        this.dispatchEvent({
+            type: 'draw',
+            target: this
+        });
     },
 
     // EX9E - KeyOp - Skips the next instruction if the key stored in VX is pressed
@@ -559,6 +569,39 @@ Chip8.prototype = {
             this.register[i] = this.virtualMemory[this.addressRegister + i];
         }
         this.programCounter += 2;
-    }
-}
+    },
 
+    // Basic support for the EventTarget interface.
+    listeners: null,
+
+    addEventListener: function(type, callback) {
+        if(!(type in this.listeners)) {
+            this.listeners[type] = [];
+        }
+        this.listeners[type].push(callback);
+    },
+
+    removeEventListener: function(type, callback) {
+        if(!(type in this.listeners)) {
+            return;
+        }
+        var stack = this.listeners[type];
+        for(var i = 0, l = stack.length; i < l; i++) {
+            if(stack[i] === callback){
+                stack.splice(i, 1);
+                return this.removeEventListener(type, callback);
+            }
+        }
+    },
+
+    dispatchEvent: function(event) {
+        if(!(event.type in this.listeners)) {
+            return;
+        }
+        var stack = this.listeners[event.type];
+        event.target = this;
+        for(var i = 0, l = stack.length; i < l; i++) {
+            stack[i].call(this, event);
+        }
+    }
+};
