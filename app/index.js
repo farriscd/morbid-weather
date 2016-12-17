@@ -1,5 +1,4 @@
 var remote = require('electron').remote;
-const stats = new Stats();
 //const ipc = require('electron').ipcRenderer;
 
 let gui;
@@ -8,15 +7,6 @@ var emulatorOptions = {
     executing: true,
     frequencyLimit: 60.
 }
-
-stats.showStats = function () {
-    this.showPanel(0);
-}
-
-stats.hideStats = function () {
-    this.showPanel(-1);
-}
-
 
 function draw(xIndex, yIndex, pixelWidth, pixelHeight, canvasWidth, imageData, color) {
     for (var x = xIndex; x < xIndex + pixelWidth; x++) {
@@ -58,10 +48,6 @@ window.onload = function () {
     var data = remote.getGlobal('openFile');
     ch.loadFont();
     ch.loadROM(data);
-
-    var statsFolder = gui.addFolder('stats');
-    statsFolder.add(stats, 'showStats');
-    statsFolder.add(stats, 'hideStats');
 
     var emulatorFolder = gui.addFolder('emulator');
     emulatorFolder.add(emulatorOptions, 'executing');
@@ -130,8 +116,6 @@ window.onload = function () {
             window.requestAnimationFrame(main);
         }, 1000 / emulatorOptions.frequencyLimit);
 
-        stats.begin();
-
         console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
 
         // Do nothing if execution is not enabled.
@@ -139,7 +123,6 @@ window.onload = function () {
             return;
         }
 
-        stats.end();
         ch.checkOpCode();
     }
     main(0);
@@ -200,10 +183,6 @@ window.onload = function () {
                 break;
         }
     }
-
-    // Add the stats UI and hide it by default.
-    document.body.appendChild(stats.dom);
-    stats.hideStats();
 };
 
 function onResizeEvent() {
