@@ -111,16 +111,23 @@ window.onload = function () {
     // Bind keys to emulator controller.
     boundKeys = [
         '1', '2', '3', '4',
-        'q', 'w', 'e' ,'r',
+        'q', 'w', 'e', 'r',
         'a', 's', 'd', 'f',
         'z', 'x', 'c', 'v'
     ];
 
+    controller = [
+        0x1, 0x2, 0x3, 0xc,
+        0x4, 0x5, 0x6, 0xd,
+        0x7, 0x8, 0x9, 0xe,
+        0xa, 0x0, 0xb, 0xf
+    ];
+
     boundKeys.forEach((key, index) => {
         keyboardJS.bind(key, () => {
-            ch.keyPress[index+1] = 1;
+            ch.keyPress[controller[index]] = 1;
         }, () => {
-            ch.keyPress[index+1] = 0;
+            ch.keyPress[controller[index]] = 0;
         })
     });
 
