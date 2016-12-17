@@ -108,6 +108,21 @@ window.onload = function () {
         drawScreen(ch.screen);
     }
 
+    // Bind keys to emulator controller.
+    boundKeys = [
+        '1', '2', '3', '4',
+        'q', 'w', 'e' ,'r',
+        'a', 's', 'd', 'f',
+        'z', 'x', 'c', 'v'
+    ];
+
+    boundKeys.forEach((key, index) => {
+        keyboardJS.bind(key, () => {
+            ch.keyPress[index+1] = 1;
+        }, () => {
+            ch.keyPress[index+1] = 0;
+        })
+    });
 
     // Main loop
     function main() {
@@ -126,63 +141,6 @@ window.onload = function () {
         ch.checkOpCode();
     }
     main(0);
-
-
-
-    document.onkeydown = checkKey;
-    function checkKey(e) {
-        e = e || window.event;
-        switch (e.keyCode) {
-            case 49:
-                ch.keyPress[0x1] = 1;
-                break;
-            case 50:
-                ch.keyPress[0x2] = 1;
-                break;
-            case 51:
-                ch.keyPress[0x3] = 1;
-                break;
-            case 52:
-                ch.keyPress[0xC] = 1;
-                break;
-            case 81:
-                ch.keyPress[0x4] = 1;
-                break;
-            case 87:
-                ch.keyPress[0x5] = 1;
-                break;
-            case 69:
-                ch.keyPress[0x6] = 1;
-                break;
-            case 82:
-                ch.keyPress[0xD] = 1;
-                break;
-            case 65:
-                ch.keyPress[0x7] = 1;
-                break;
-            case 83:
-                ch.keyPress[0x8] = 1;
-                break;
-            case 68:
-                ch.keyPress[0x9] = 1;
-                break;
-            case 70:
-                ch.keyPress[0xE] = 1;
-                break;
-            case 90:
-                ch.keyPress[0xA] = 1;
-                break;
-            case 88:
-                ch.keyPress[0x0] = 1;
-                break;
-            case 67:
-                ch.keyPress[0xB] = 1;
-                break;
-            case 86:
-                ch.keyPress[0xF] = 1;
-                break;
-        }
-    }
 };
 
 function onResizeEvent() {
