@@ -8,33 +8,11 @@ var emulatorOptions = {
     frequencyLimit: 60.
 }
 
-function draw(xIndex, yIndex, pixelWidth, pixelHeight, canvasWidth, imageData, color) {
-    for (var x = xIndex; x < xIndex + pixelWidth; x++) {
-        for (var y = yIndex; y < yIndex + pixelHeight; y++) {
-            // Get the pixel index
-            var pixelindex = (y * canvasWidth + x) * 4;
-
-            // Set the pixel data
-            imageData.data[pixelindex] = color;     // Red
-            imageData.data[pixelindex + 1] = color; // Green
-            imageData.data[pixelindex + 2] = color;  // Blue
-            imageData.data[pixelindex + 3] = color;   // Alpha
-        }
-    }
+function draw(xIndex, yIndex, pixelWidth, pixelHeight, color, context) {
+  context.fillStyle=color;
+  context.fillRect(xIndex, yIndex, pixelWidth, pixelHeight);
 }
 
-function drawScreen(gfx) {
-    for (var i = 0; i < gfx.length; i++) {
-        var x = (i % 64) * pixelWidth;
-        var y = Math.floor(i / 64) * pixelHeight;
-        (gfx[i] == true)
-            ? draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 255)
-            : draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 0);
-    }
-}
-
-
-var imagedata;
 var pixelWidth;
 var pixelHeight;
 
@@ -53,56 +31,35 @@ window.onload = function () {
     emulatorFolder.add(emulatorOptions, 'executing');
     emulatorFolder.add(emulatorOptions, 'frequencyLimit', 1, 1024);
 
-
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
     canvas.width = 640;
     canvas.height = 320;
 
-    //onResizeEvent();
-    document.getElementById("viewport").style.backgroundColor = 'rgb(0, 0, 0)';
-
-
     // Define the pixel dimensions
     var ix;
     var iy;
-    //var pixelWidth = canvas.width / 64;
-    //var pixelHeight = canvas.height / 32;
-    pixelWidth = 10;
-    pixelHeight = 10;
 
-    // Create an ImageData object
-    imagedata = context.createImageData(canvas.width, canvas.height);
-
-    function redrawBackground() {
-        draw(0, 0, canvas.width, canvas.height, canvas.width, imagedata, 0);
-    }
+    pixelWidth = pixelHeight = 10;
 
     function drawScreen(gfx) {
-        imagedata = context.createImageData(canvas.width, canvas.height);
-        for (var i = 0; i < gfx.length; i++) {
-            var x = (i % 64) * pixelWidth;
-            var y = Math.floor(i / 64) * pixelHeight;
-            (gfx[i] == true)
-                ? draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 255)
-                : draw(x, y, pixelWidth, pixelHeight, canvas.width, imagedata, 0);
-        }
+      for (var i = 0; i < 64 * 32; i++) {
+        var x = (i % 64) * pixelWidth;
+        var y = Math.floor(i / 64) * pixelHeight;
+
+        draw(x, y, pixelWidth, pixelHeight, (gfx[i] === 1) ? 'red' : 'black', context);
+      }
     }
 
     function onDraw(event) {
-        // Create the image
         drawScreen(ch.screen);
-
-        // Draw the image data to the canvas
-        context.putImageData(imagedata, 0, 0);
     }
 
     ch.addEventListener('draw', onDraw);
 
     // Create the image
     function createImage() {
-        //redrawBackground();
         // Draw white pixel of size pixelWidth x pixelHeight at index (ix, iy)
         //draw(ix, iy, pixelWidth, pixelHeight, canvas.width, imagedata, 255);
         drawScreen(ch.screen);
@@ -138,7 +95,7 @@ window.onload = function () {
             window.requestAnimationFrame(main);
         }, 1000 / emulatorOptions.frequencyLimit);
 
-        console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
+        //console.log("!!!!!!!!!!!!!!!!CYCLE!!!!!!!!!!!!!!!!");
 
         // Do nothing if execution is not enabled.
         if (!emulatorOptions.executing) {

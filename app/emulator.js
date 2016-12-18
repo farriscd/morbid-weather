@@ -31,7 +31,7 @@ Chip8.prototype = {
     fetchOpCode: function () {
         this.opcode = (this.virtualMemory[this.programCounter] << 8) +
             this.virtualMemory[this.programCounter + 1];
-        console.log((this.opcode).toString(16));
+        //console.log((this.opcode).toString(16));
     },
 
     checkOpCode: function () {
@@ -48,137 +48,137 @@ Chip8.prototype = {
             case 0x0:
                 switch (addr) {
                     case 0x0E0:
-                        console.log('screen clear');
+                        //console.log('screen clear');
                         this.clearScreen();
                         break;
                     case 0x0EE:
-                        console.log('returnFromSubroutine');
+                        //console.log('returnFromSubroutine');
                         this.returnFromSubroutine();
                         break;
                     default:
-                        console.log('call rca 1802');
+                        //console.log('call rca 1802');
                         break;
                 }
                 break;
 
             case 0x1:
-                console.log('jumpto');
+                //console.log('jumpto');
                 this.jumpTo(addr);
                 break;
 
             case 0x2:
-                console.log('callSubroutine');
+                //console.log('callSubroutine');
                 this.callSubroutine(addr);
                 break;
 
             case 0x3:
-                console.log('skipifequals');
+                //console.log('skipifequals');
                 this.skipIfEquals(x, byte);
                 break;
 
             case 0x4:
-                console.log('skipifnotequals');
+                //console.log('skipifnotequals');
                 this.skipIfNotEquals(x, byte);
                 break;
 
             case 0x5:
-                console.log('skipifequalsVY');
+                //console.log('skipifequalsVY');
                 this.skipIfEqualsVY(x, y);
                 break;
 
             case 0x6:
-                console.log('setV');
+                //console.log('setV');
                 this.setVX(x, byte);
                 break;
 
             case 0x7:
-                console.log('addNNtoVX');
+                //console.log('addNNtoVX');
                 this.addToVX(x, byte);
                 break;
 
             case 0x8:
                 switch (nibble) {
                     case 0x0:
-                        console.log('assignVx');
+                        //console.log('assignVx');
                         this.assignVX(x, y);
                         break;
 
                     case 0x1:
-                        console.log('bitwiseOr');
+                        //console.log('bitwiseOr');
                         this.bitwiseOr(x, y);
                         break;
 
                     case 0x2:
-                        console.log('bitwiseAnd');
+                        //console.log('bitwiseAnd');
                         this.bitwiseAnd(x, y);
                         break;
 
                     case 0x3:
-                        console.log('bitwiseXOR');
+                        //console.log('bitwiseXOR');
                         this.bitwiseXor(x, y);
                         break;
 
                     case 0x4:
-                        console.log('addSetCarry');
+                        //console.log('addSetCarry');
                         this.addVYtoVX(x, y);
                         break;
 
                     case 0x5:
-                        console.log('subtractSetBorrow');
+                        //console.log('subtractSetBorrow');
                         this.subtractVYfromVX(x, y);
                         break;
 
                     case 0x6:
-                        console.log('bitwiseShiftRight');
+                        //console.log('bitwiseShiftRight');
                         this.bitwiseShiftRight(x, y);
                         break;
 
                     case 0x7:
-                        console.log('diffVX');
+                        //console.log('diffVX');
                         this.diffVX(x, y);
                         break;
 
                     case 0xE:
-                        console.log('bitwiseShiftLeft');
+                        //console.log('bitwiseShiftLeft');
                         this.bitwiseShiftLeft(x, y);
                         break;
                 }
                 break;
 
             case 0x9:
-                console.log('skipifnotequalsVY');
+                //console.log('skipifnotequalsVY');
                 this.skipIfNotEqualsVY(x, y);
                 break;
 
             case 0xA:
-                console.log('setI');
+                //console.log('setI');
                 this.setI(addr);
                 break;
 
             case 0xB:
-                console.log('jump to I plus V0');
+                //console.log('jump to I plus V0');
                 this.jumpToPlus(addr);
                 break;
 
             case 0xC:
-                console.log('rand');
+                //console.log('rand');
                 this.setRand(x, byte);
                 break;
 
             case 0xD:
-                console.log('draw');
+                //console.log('draw');
                 this.drawSprite(x, y, nibble);
                 break;
 
             case 0xE:
                 switch (byte) {
                     case 0x9E:
-                        console.log('skipIfPressed');
+                        //console.log('skipIfPressed');
                         this.skipIfPressed(x);
                         break;
 
                     case 0xA1:
-                        console.log('skipIfNotPressed');
+                        //console.log('skipIfNotPressed');
                         this.skipIfNotPressed(x);
                         break;
                 }
@@ -187,47 +187,47 @@ Chip8.prototype = {
             case 0xF:
                 switch (byte) {
                     case 0x07:
-                        console.log('getDelay');
+                        //console.log('getDelay');
                         this.getDelay(x);
                         break;
 
                     case 0x0A:
-                        console.log('waitForKey');
+                        //console.log('waitForKey');
                         this.waitForKey(x);
                         break;
 
                     case 0x15:
-                        console.log('setDelay');
+                        //console.log('setDelay');
                         this.setDelay(x);
                         break;
 
                     case 0x18:
-                        console.log('setSound');
+                        //console.log('setSound');
                         this.setSound(x);
                         break;
 
                     case 0x1E:
-                        console.log('addToI');
+                        //console.log('addToI');
                         this.addToI(x);
                         break;
 
                     case 0x29:
-                        console.log('setItoFont');
+                        //console.log('setItoFont');
                         this.setFont(x);
                         break;
 
                     case 0x33:
-                        console.log('storeBCD');
+                        //console.log('storeBCD');
                         this.storeBCD(x);
                         break;
 
                     case 0x55:
-                        console.log('storeV');
+                        //console.log('storeV');
                         this.storeV(x);
                         break;
 
                     case 0x65:
-                        console.log('fillV')
+                        //console.log('fillV')
                         this.fillV(x);
                         break;
                 }
@@ -242,7 +242,7 @@ Chip8.prototype = {
             --this.soundTimer;
         }
 
-        console.log(this.keyPress);
+        //console.log(this.keyPress);
         this.keyPress = [];
     },
 
@@ -255,7 +255,7 @@ Chip8.prototype = {
     loadROM: function (data) {
         for (var i = 0; i < data.length; i++) {
             this.virtualMemory[0x200 + i] = data[i];
-            console.log(this.virtualMemory[0x200 + i].toString(16));
+            //console.log(this.virtualMemory[0x200 + i].toString(16));
         }
     },
 
@@ -296,10 +296,10 @@ Chip8.prototype = {
     // 3XNN - Cond - Skips the next instruction if VX equals NN
     skipIfEquals: function (vx, nn) {
         if (this.register[vx] === nn) {
-            console.log('skip');
+            //console.log('skip');
             this.programCounter += 4;
         } else {
-            console.log('no skip');
+            //console.log('no skip');
             this.programCounter += 2;
         }
     },
@@ -307,10 +307,10 @@ Chip8.prototype = {
     // 4XNN - Cond - Skips the next instruction if VX doesn't equal NN
     skipIfNotEquals: function (vx, nn) {
         if (this.register[vx] != nn) {
-            console.log('skip');
+            //console.log('skip');
             this.programCounter += 4;
         } else {
-            console.log('no skip');
+            //console.log('no skip');
             this.programCounter += 2;
         }
     },
@@ -318,10 +318,10 @@ Chip8.prototype = {
     // 5XY0 - Cond - Skips the next instruction if VX equals VY
     skipIfEqualsVY: function (vx, vy) {
         if (this.register[vx] === this.register[vy]) {
-            console.log('skip');
+            //console.log('skip');
             this.programCounter += 4;
         } else {
-            console.log('no skip');
+            //console.log('no skip');
             this.programCounter += 2;
         }
     },
@@ -329,7 +329,7 @@ Chip8.prototype = {
     // 6XNN - Const - Sets VX to NN
     setVX: function (vx, nn) {
         this.register[vx] = nn;
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         this.programCounter += 2;
     },
 
@@ -337,7 +337,7 @@ Chip8.prototype = {
     addToVX: function (vx, nn) {
         this.register[vx] += nn;
         this.register[vx] &= 0xFF;
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         this.programCounter += 2;
     },
 
@@ -421,10 +421,10 @@ Chip8.prototype = {
     // 9XY0 - Cond - Skips the next instruction if VX doesn't equal VY
     skipIfNotEqualsVY: function (vx, vy) {
         if (this.register[vx] != this.register[vy]) {
-            console.log('skip');
+            //console.log('skip');
             this.programCounter += 4;
         } else {
-            console.log('no skip');
+            //console.log('no skip');
             this.programCounter += 2;
         }
     },
@@ -432,8 +432,8 @@ Chip8.prototype = {
     // ANNN - MEM - Sets I to the address 
     setI: function (addr) {
         this.addressRegister = addr;
-        console.log(this.addressRegister);
-        console.log(this.virtualMemory[this.addressRegister]);
+        //console.log(this.addressRegister);
+        //console.log(this.virtualMemory[this.addressRegister]);
         this.programCounter += 2;
     },
 
@@ -446,9 +446,9 @@ Chip8.prototype = {
     setRand: function (vx, nn) {
         var random = new Uint8Array(1);
         window.crypto.getRandomValues(random);
-        console.log(random);
+        //console.log(random);
         this.register[vx] = (random & nn);
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         this.programCounter += 2;
     },
 
@@ -480,25 +480,25 @@ Chip8.prototype = {
 
     // EX9E - KeyOp - Skips the next instruction if the key stored in VX is pressed
     skipIfPressed: function (vx) {
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         if (this.keyPress[this.register[vx]] === 1) {
-            console.log('skip');
+            //console.log('skip');
             //this.keyPress = [];
             this.programCounter += 4;
         } else {
-            console.log('no skip');
+            //console.log('no skip');
             this.programCounter += 2;
         }
     },
 
     // EXA1 - KeyOp - Skips the next instruction if the key stored in VX isn't pressed
     skipIfNotPressed: function (vx) {
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         if (this.keyPress[this.register[vx]] != 1) {
-            console.log('skip');
+            //console.log('skip');
             this.programCounter += 4;
         } else {
-            console.log('no skip');
+            //console.log('no skip');
             //this.keyPress = [];
             this.programCounter += 2;
         }
@@ -507,7 +507,7 @@ Chip8.prototype = {
     // FX07 - Timer - Sets VX to the value of the delay timer
     getDelay: function (vx) {
         this.register[vx] = this.delayTimer;
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         this.programCounter += 2;
     },
 
@@ -522,14 +522,14 @@ Chip8.prototype = {
     // FX15 - Timer - Sets the delay timer to VX
     setDelay: function (vx) {
         this.delayTimer = this.register[vx];
-        console.log(this.delayTimer);
+        //console.log(this.delayTimer);
         this.programCounter += 2;
     },
 
     // FX18 - Sound - Sets the sound timer to VX
     setSound: function (vx) {
         this.soundTimer = this.register[vx];
-        console.log(this.soundTimer);
+        //console.log(this.soundTimer);
         this.programCounter += 2;
     },
 
@@ -548,7 +548,7 @@ Chip8.prototype = {
 
     // FX33 - BCD -	Stores the binary-coded decimal representation of VX
     storeBCD: function (vx) {
-        console.log(this.register[vx]);
+        //console.log(this.register[vx]);
         this.virtualMemory[this.addressRegister] = Math.floor(this.register[vx] / 100);
         this.virtualMemory[this.addressRegister + 1] = Math.floor(this.register[vx] / 10) % 10;
         this.virtualMemory[this.addressRegister + 2] = this.register[vx] % 10;
